@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.time.LocalDateTime;
 
 import com.mysite.sbb.DataNotFoundException;
+import com.mysite.sbb.user.SiteUser;
 
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
@@ -41,11 +42,12 @@ public class QuestionService {
 	}
 	}
 	
-	public void create(String subject, String content) {
+	public void create(String subject, String content, SiteUser user) {
 		Question q = new Question();
 		q.setSubject(subject);
 		q.setContent(content);
 		q.setCreateDate(LocalDateTime.now());
+		q.setAuthor(user);
 		this.questionRepository.save(q);
 	}
 	

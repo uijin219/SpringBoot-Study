@@ -3,6 +3,7 @@ package com.mysite.sbb.answer;
 import java.time.LocalDateTime;
 
 import com.mysite.sbb.question.Question;
+import com.mysite.sbb.user.SiteUser;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -30,5 +31,6 @@ public class Answer {
 	@ManyToOne
 	private Question question; //질문엔티티 참조위해 question속성 추가
 	
-
+	@ManyToOne
+	private SiteUser author;
 }
