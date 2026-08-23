@@ -9,6 +9,8 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.header.writers.frameoptions.XFrameOptionsHeaderWriter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 
 @Configuration
 @EnableWebSecurity
@@ -23,11 +25,23 @@ public class SecurityConfig {
 						("/h2-console/**")))
 			.headers((headers) -> headers
 					.addHeaderWriter(new XFrameOptionsHeaderWriter(XFrameOptionsHeaderWriter.XFrameOptionsMode.SAMEORIGIN)))
+			.formLogin((formLogin) -> formLogin //로그인 설정 담당
+					.loginPage("/user/login") //로그인 페이지 URL
+					.defaultSuccessUrl("/")) //로그인 성공 시 루트URL(/)로
+			.logout((logout) -> logout
+					.logoutRequestMatcher(new AntPathRequestMatcher("/user/logout")) //로그아웃 URL
+					.logoutSuccessUrl("/") //로그아웃 성공 시 루트(/)페이지
+					.invalidateHttpSession(true)) //로그아웃 시 생성된 사용자 세션 삭제
 			;
 		return http.build();		
 	}
 	@Bean
 	PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
+	}
+	
+	@Bean
+	AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception{
+		return authenticationConfiguration.getAuthenticationManager();
 	}
 }
