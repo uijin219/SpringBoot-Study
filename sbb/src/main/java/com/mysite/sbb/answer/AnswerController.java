@@ -79,4 +79,13 @@ public class AnswerController {
 		this.answerService.delete(answer);
 		return String.format("redirect:/question/detail/%s", answer.getQuestion().getId());
 	}
+	
+	@PreAuthorize("isAuthenticated()") //로그인 한 사람만 작성가능
+	@GetMapping("/vote/{id}")
+	public String answerVote(Principal principal, @PathVariable("id") Integer id) {
+		Answer answer = this.answerService.getAnswer(id);
+		SiteUser siteUser = this.userService.getUser(principal.getName());
+		this.answerService.vote(answer, siteUser);
+		return String.format("redirect:/question/detail/%s", answer.getQuestion().getId());
+	}
 }
